@@ -2,11 +2,11 @@ const mongoose = require('mongoose');
 
 const UserSchema = mongoose.Schema({
 
-    last_names: { type: String, required: true },
+    last_names: { type: String },
     
     names: { type: String, required: true },
 
-    cuit: { type: Number, required: true, trim: true },
+    cuit: { type: Number, trim: true },
     
     email: { type: String, required: true, trim: true, unique: true },
 
