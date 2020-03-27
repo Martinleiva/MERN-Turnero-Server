@@ -7,6 +7,7 @@ module.exports = function(req, res, next){
     //Check if exist a token
     if(!token){
         res.status(401).json({ msg: 'No hay token. Permiso denegado'});
+        return;
     }
 
     //Verify token
@@ -17,6 +18,7 @@ module.exports = function(req, res, next){
         next();
     } catch(error){
         res.status(401).json({ msg: 'Token no valido'});
+        return;
     }
 
 }
