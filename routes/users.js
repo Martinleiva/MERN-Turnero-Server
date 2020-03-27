@@ -10,11 +10,11 @@ const { check } = require('express-validator');
 router.post('/', 
     [
         //check('last_names', 'The Last name is required').not().isEmpty(),
-        check('names', 'The Name is required').not().isEmpty(),
+        check('names', 'El Nombre es requerido').not().isEmpty(),
         //check('cuit', 'The CUIT is required').not().isEmpty(),
-        check('email', 'Enter a valid Email').isEmail(),
-        check('tel', 'The Telephone Number is required').not().isEmpty(),
-        check('password', 'the Password must be at least 6 characters').isLength({ min: 6}),
+        check('email', 'Ingrese un Email válido').isEmail(),
+        check('tel', 'El Teléfono es requerido').not().isEmpty(),
+        check('password', 'El Password debe ser de al menos 6 caracteres').isLength({ min: 6}),
     ],
     userController.createUser
 );
