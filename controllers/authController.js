@@ -1,6 +1,5 @@
 const User = require('../models/User');
 const bcryptjs = require('bcryptjs');
-//const {validationResult} = require('express-validator');
 const jwt = require ('jsonwebtoken');
 
 exports.authUser = async (req, res) => {
@@ -14,8 +13,8 @@ exports.authUser = async (req, res) => {
             return res.status(400).json({ msg: 'El Usuario no existe' });
         }
 
-        //const passwordOk = await bcryptjs.compare(password, user.password);
-        const passwordOk = user.password === password;
+        const passwordOk = await bcryptjs.compare(password, user.password);
+        //const passwordOk = user.password === password;
         if(!passwordOk){
             return res.status(400).json({ msg: 'El password es incorrecto' })
         }
@@ -27,7 +26,7 @@ exports.authUser = async (req, res) => {
             }
         };
        
-        jwt.sign(payload, process.env.WORD_SECRET, {
+        jwt.sign(payload, process.env.SECRETA, {
             expiresIn : 3600 
         }, (error, token) => {
             if(error) throw error;                        
@@ -45,6 +44,6 @@ exports.getAuthenticatedUser = async (req, res) => {
         res.json({user});
     } catch (error) {
         console.log(error);
-        res.status(500).json({ msg: 'A error has ocurred' });
+        res.status(500).json({ msg: 'Hubo un error' });
     }
 }

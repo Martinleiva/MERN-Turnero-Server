@@ -11,12 +11,12 @@ module.exports = function(req, res, next){
 
     //Verify token
     try {
-        const cifrado = jwt.verify(token, process.env.WORD_SECRET);
+        const cifrado = jwt.verify(token, process.env.SECRETA);
         req.user = cifrado.user;
 
         next();
     } catch(error){
-        res.status(401).json({ msg: 'Token no valido'})
+        res.status(401).json({ msg: 'Token no valido'});
     }
 
 }
