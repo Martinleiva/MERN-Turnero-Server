@@ -3,8 +3,6 @@ const bcryptjs = require('bcryptjs');
 const { validationResult } = require('express-validator');
 const jwt = require('jsonwebtoken');
 
-//Api creada! falta parte del front!
-
 exports.createUser = async (req, res) => {
 
     //Check for errors
