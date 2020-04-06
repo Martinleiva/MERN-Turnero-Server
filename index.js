@@ -27,6 +27,7 @@ app.use('/api/service', require('./routes/service'));
 app.use('/api/ground-type', require('./routes/ground_type'));
 app.use('/api/sport-type', require('./routes/sport_type'));
 app.use('/api/establishment', require('./routes/establishment'));
+app.use('/api/establishment-by-owner', require('./routes/establishmentByOwner'));
 app.use('/api/field', require('./routes/field'));
 
 // Start app

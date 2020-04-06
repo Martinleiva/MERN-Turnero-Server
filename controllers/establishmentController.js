@@ -42,6 +42,17 @@ exports.getEstablishmentById = async (req, res) => {
     }
 }
 
+//Get all establishment by ownerId
+exports.getEstablishmentByOwner = async (req, res) => {
+    try {                                          
+        const establishments = await Establishment.find( { 'owner' : req.user.id } ).populate('services');
+        res.json({ establishments });
+    } catch (error) {
+        console.log(error);
+        res.status(400).send('Un error ha ocurrido');
+    }
+}
+
 //update establishment by id
 exports.updateEstablishment = async (req, res) => {
     try {        

@@ -31,6 +31,11 @@ router.get('/:id',
     fieldController.getFieldById
 );
 
+router.get('/establishment/:establishmenId',
+    auth,
+    fieldController.getFieldByEstblishmenId
+);
+
 router.put('/:id',
     auth,
     fieldController.updateField
