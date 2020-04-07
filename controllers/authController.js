@@ -4,7 +4,7 @@ const jwt = require ('jsonwebtoken');
 
 exports.authUser = async (req, res) => {
 
-    const {email, password} = req.body;    
+    const {email, password, user_type} = req.body;    
 
     try {
 
@@ -18,6 +18,8 @@ exports.authUser = async (req, res) => {
         if(!passwordOk){
             return res.status(400).json({ msg: 'El password es incorrecto' })
         }
+
+        type_usr = user_type; 
         
         //create and sign jwt
         const payload = {
@@ -30,7 +32,7 @@ exports.authUser = async (req, res) => {
             expiresIn : 3600 
         }, (error, token) => {
             if(error) throw error;                        
-            res.json({token});
+            res.json({token, type_usr});
         });
         
     } catch (error) {
