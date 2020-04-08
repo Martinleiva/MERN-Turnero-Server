@@ -57,3 +57,49 @@ exports.createUser = async (req, res) => {
     }
     
 }
+
+// actualizar un proyecto (modificar)
+exports.updateUser = async (req, res) => {
+
+    //Check for errors
+    const errors = validationResult(req);
+    if(!errors.isEmpty() ) {
+        return res.status(400).json({ errors: errors.array()});
+    }
+
+    // extraer la informacion del usuario
+    const { names, last_names, tel, cuit, email } = req.body;
+    const newUser = {};
+
+    if ( names && last_names && tel && cuit && email) {
+        newUser.names = names;
+        newUser.last_names = last_names;
+        newUser.tel = tel;
+        newUser.cuit = cuit;
+        newUser.email = email;
+    }
+
+    try {
+        
+        // revisar el ID
+        let user = await User.findById(req.params.id);
+
+        // si el usuario existe o no
+        if(!user) {
+            return res.status(404).json({ msg: 'Usuario no encontrado' })
+        }
+
+        // verificar el usuario
+        // if (proyecto.creador.toString() !== req.usuario.id ) {
+        //     return res.status(401).json({ msg: 'Acceso no autorizado'})
+        // }
+
+        // actualizar el usuario
+        user = await User.findByIdAndUpdate({ _id: req.params.id }, { $set : newUser }, { new : true });
+        res.json({user});
+        
+    } catch (error) {
+        console.log(error);
+        res.status(500).send('Error en el servidor');
+    }
+}
