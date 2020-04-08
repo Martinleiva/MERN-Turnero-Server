@@ -1,12 +1,17 @@
 const express = require('express');
 const connectDB = require('./config/db');
 const cors = require('cors');
+const bodyParser = require('body-parser');
 
 // Create server
 const app = express();
 
 // Connect with the database
 connectDB();
+
+
+app.use(bodyParser.json({limit: '10mb', extended: true}));
+app.use(bodyParser.urlencoded({limit: '10mb', extended: true}));
 
 // Enable CORS
 app.use(cors());
@@ -16,8 +21,6 @@ app.use(express.json({ extended: true }));
 
 // App's port 
 const PORT = process.env.PORT  || 4000;
-
-app.use(cors());
 
 // import routes
 app.use('/api/users', require('./routes/users'));

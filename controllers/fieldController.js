@@ -2,17 +2,16 @@ const Field = require('../models/Field');
 const { validationResult } = require('express-validator');
 
 exports.createField = async (req, res) => {
-
+    
     //Check for errors
     const errors = validationResult(req);
     if(!errors.isEmpty() ) {
         return res.status(400).json({ errors: errors.array()});
     }    
-
     try {        
         field = new Field(req.body);
         await field.save();
-        res.json({ msg: 'Cancha creada con exito' });
+        res.json(field);        
     } catch (error) {
         console.log(error);
         res.status(400).send('Un error ha ocurrido');
@@ -45,7 +44,7 @@ exports.getFieldById = async (req, res) => {
 //Get all fields by EstblishmenId
 exports.getFieldByEstblishmenId = async (req, res) => {
     try {                                  
-        const fields = await Field.find({ 'establishment' : req.params.establishmenId}).populate('sport_type').populate('ground_type');
+        const fields = await Field.find({ 'establishment' : req.params.establishmenId}).populate('sport_type').populate('ground_type').select('-photo_1');;
         res.json({ fields });
     } catch (error) {
         console.log(error);
