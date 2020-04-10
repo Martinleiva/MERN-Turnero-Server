@@ -33,7 +33,7 @@ exports.getFields = async (req, res) => {
 //Get all field by id
 exports.getFieldById = async (req, res) => {
     try {                                  
-        const field = await Field.findById(req.params.id);
+        const field = await Field.findById(req.params.id).populate('sport_type').populate('ground_type');
         res.json({ field });
     } catch (error) {
         console.log(error);
