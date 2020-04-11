@@ -1,4 +1,5 @@
 const express = require('express');
+const path = require("path");
 const connectDB = require('./config/db');
 const cors = require('cors');
 const bodyParser = require('body-parser');
@@ -21,6 +22,8 @@ app.use(express.json({ extended: true }));
 
 // App's port 
 const PORT = process.env.PORT  || 4000;
+
+app.use('/images', express.static('./uploaded-files'));
 
 // import routes
 app.use('/api/users', require('./routes/users'));

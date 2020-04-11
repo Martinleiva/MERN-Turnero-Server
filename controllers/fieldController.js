@@ -9,12 +9,25 @@ exports.createField = async (req, res) => {
         return res.status(400).json({ errors: errors.array()});
     }    
     try {        
+        /*Here we need to convert the base64 code to a image and 
+        save it inside the 'uploaded-files' directory*/
+        const base64Photo1Info = req.body.photo_1;        
+        var base64Data = base64Photo1Info.replace(/^data:image\/png;base64,/, "");
+        const timestamp = new Date().getTime();
+        const urlphoto_1 = `./uploaded-files/${timestamp}.png`; //fisical path
+        const path = `/images/${timestamp}.png`; //virtual and public path       
+        require("fs").writeFile(urlphoto_1, base64Data, 'base64', function(err) {
+            console.log(err);
+        });        
+        console.log(path);        
+        req.body.photo_1 = path; //update the base64 code to the imagen path
+
         field = new Field(req.body);
-        await field.save();
+        await field.save();    
         res.json(field);        
     } catch (error) {
         console.log(error);
-        res.status(400).send('Un error ha ocurrido');
+        res.status(400).send({ msg : 'Un error ha ocurrido' });
     }
 
 }
@@ -26,7 +39,7 @@ exports.getFields = async (req, res) => {
         res.json({ fields });
     } catch (error) {
         console.log(error);
-        res.status(400).send('Un error ha ocurrido');
+        res.status(400).send({ msg : 'Un error ha ocurrido' });
     }
 }
 
@@ -37,18 +50,18 @@ exports.getFieldById = async (req, res) => {
         res.json({ field });
     } catch (error) {
         console.log(error);
-        res.status(400).send('Un error ha ocurrido');
+        res.status(400).send({ msg : 'Un error ha ocurrido' });
     }
 }
 
 //Get all fields by EstblishmenId
 exports.getFieldByEstblishmenId = async (req, res) => {
     try {                                  
-        const fields = await Field.find({ 'establishment' : req.params.establishmenId}).populate('sport_type').populate('ground_type').select('-photo_1');;
+        const fields = await Field.find({ 'establishment' : req.params.establishmenId}).populate('sport_type').populate('ground_type');
         res.json({ fields });
     } catch (error) {
         console.log(error);
-        res.status(400).send('Un error ha ocurrido');
+        res.status(400).send({ msg : 'Un error ha ocurrido' });
     }
 }
 
@@ -84,7 +97,7 @@ exports.updateField = async (req, res) => {
         
     } catch (error) {
         console.log(error);
-        res.status(500).send('Un error ha ocurrido');    
+        res.status(500).send({ msg : 'Un error ha ocurrido' });    
     }
 }
 
@@ -103,6 +116,6 @@ exports.deleteField = async (req, res) => {
         
     } catch (error) {
         console.log(error);
-        res.status(500).send('Un error ha ocurrido');    
+        res.status(500).send({ msg : 'Un error ha ocurrido' });    
     }
 }
