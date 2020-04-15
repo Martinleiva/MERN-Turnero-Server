@@ -22,6 +22,7 @@ app.use(cors());
 // import routes
 app.use('/api/users',require('./routes/users'));
 app.use('/api/auth',require('./routes/auth'));
+app.use('/api/reservation',require('./routes/reservation'));
 
 // Start app
 app.listen( PORT , () => {
