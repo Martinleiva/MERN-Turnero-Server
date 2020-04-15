@@ -35,7 +35,7 @@ exports.createField = async (req, res) => {
 //Get all fields
 exports.getFields = async (req, res) => {
     try {                
-        const fields = await Field.find();
+        const fields = await Field.find().populate('establishment').populate('sport_type').populate('ground_type');
         res.json({ fields });
     } catch (error) {
         console.log(error);
