@@ -70,15 +70,16 @@ exports.getEstablishmentByOwner = async (req, res) => {
 //update establishment by id
 exports.updateEstablishment = async (req, res) => {
     try {        
+        
         const { name, address, tel, coordinates, category, 
-                photo_1, photo_2, sunday, monday, tuesday, 
-                wednesday, thursday, friday, saturday } = req.body;        
+                sunday, monday, tuesday, wednesday, thursday, 
+                friday, saturday, services } = req.body;        
         
         let establishment = await Establishment.findById(req.params.id);
 
         if(!establishment){
             return res.status(404).json({ msg: 'No existe el complejo' });
-        }            
+        }                  
 
         //Create a new object with the new data
         const newEstablishment = {};
@@ -86,9 +87,8 @@ exports.updateEstablishment = async (req, res) => {
         newEstablishment.address = address;
         newEstablishment.tel = tel;
         newEstablishment.coordinates = coordinates;
-        newEstablishment.category = category;
-        newEstablishment.photo_1 = photo_1;
-        newEstablishment.photo_2 = photo_2;                              
+        newEstablishment.category = category;        
+        newEstablishment.photo_2 = '';                              
         newEstablishment.sunday = sunday;
         newEstablishment.monday = monday;
         newEstablishment.tuesday = tuesday;
@@ -96,11 +96,26 @@ exports.updateEstablishment = async (req, res) => {
         newEstablishment.thursday = thursday;
         newEstablishment.friday = friday;
         newEstablishment.saturday = saturday;
+        newEstablishment.services = services;
+
+        /*Here we need to convert the base64 code to a image and 
+        save it inside the 'uploaded-files' directory*/
+        if(req.body.photo_1){        
+            const base64Photo1Info = req.body.photo_1;        
+            var base64Data = base64Photo1Info.replace(/^data:image\/png;base64,/, "");
+            const timestamp = new Date().getTime();
+            const urlphoto_1 = `./uploaded-files/${timestamp}.png`; //fisical path
+            const path = `/images/${timestamp}.png`; //virtual and public path       
+            require("fs").writeFile(urlphoto_1, base64Data, 'base64', function(err) {
+                console.log(err);
+            });
+            newEstablishment.photo_1 = path;        
+        }                
 
         //now update establishment
         establishment = await Establishment.findOneAndUpdate({ _id : req.params.id}, newEstablishment, { new : true });
         
-        res.json({ establishment });        
+        res.json({ msg: 'Complejo modificado con exito' });        
         
     } catch (error) {
         console.log(error);
