@@ -69,7 +69,7 @@ exports.getFieldByEstblishmenId = async (req, res) => {
 exports.updateField = async (req, res) => {
     try {        
         const { name, sport_type, ground_type, number_of_players, is_roofed, 
-                has_lighting, price, is_enabled, photo_1, photo_2 } = req.body;        
+                has_lighting, price, is_enabled } = req.body;        
         
         let field = await Field.findById(req.params.id);
 
@@ -87,13 +87,25 @@ exports.updateField = async (req, res) => {
         newField.has_lighting = has_lighting;
         newField.price = price;
         newField.is_enabled = is_enabled;
-        newField.photo_1 = photo_1;
-        newField.photo_2 = photo_2;
+        
+        /*Here we need to convert the base64 code to a image and 
+        save it inside the 'uploaded-files' directory*/
+        if(req.body.photo_1){        
+            const base64Photo1Info = req.body.photo_1;        
+            var base64Data = base64Photo1Info.replace(/^data:image\/png;base64,/, "");
+            const timestamp = new Date().getTime();
+            const urlphoto_1 = `./uploaded-files/${timestamp}.png`; //fisical path
+            const path = `/images/${timestamp}.png`; //virtual and public path       
+            require("fs").writeFile(urlphoto_1, base64Data, 'base64', function(err) {
+                console.log(err);
+            });
+            newField.photo_1 = path;        
+        }   
 
         //now update field
         field = await Field.findOneAndUpdate({ _id : req.params.id}, newField, { new : true });
         
-        res.json({ field });        
+        res.json({ msg:'La cancha ha sido modificada' });        
         
     } catch (error) {
         console.log(error);
