@@ -9,25 +9,29 @@ exports.createField = async (req, res) => {
         return res.status(400).json({ errors: errors.array()});
     }    
     try {        
-        /*Here we need to convert the base64 code to a image and 
-        save it inside the 'uploaded-files' directory*/
-        const base64Photo1Info = req.body.photo_1;        
-        var base64Data = base64Photo1Info.replace(/^data:image\/png;base64,/, "");
-        const timestamp = new Date().getTime();
-        const urlphoto_1 = `./uploaded-files/${timestamp}.png`; //fisical path
-        const path = `/images/${timestamp}.png`; //virtual and public path       
-        require("fs").writeFile(urlphoto_1, base64Data, 'base64', function(err) {
-            console.log(err);
-        });        
-        console.log(path);        
-        req.body.photo_1 = path; //update the base64 code to the imagen path
-
+        if(req.body.photo_1){
+            /*Here we need to convert the base64 code to a image and 
+            save it inside the 'uploaded-files' directory*/        
+            const base64Photo1Info = req.body.photo_1;        
+            var base64Data = base64Photo1Info.replace(/^data:image\/png;base64,/, "");
+            const timestamp = new Date().getTime();
+            const urlphoto_1 = `./uploaded-files/${timestamp}.png`; //fisical path
+            const path = `/images/${timestamp}.png`; //virtual and public path       
+            require("fs").writeFile(urlphoto_1, base64Data, 'base64', function(err) {
+                console.log(err);
+            });        
+            console.log(path);        
+            req.body.photo_1 = path; //update the base64 code to the imagen path
+        } else{
+            req.body.photo_1 = '';
+        }
+        
         field = new Field(req.body);
         await field.save();    
         res.json(field);        
     } catch (error) {
         console.log(error);
-        res.status(400).send({ msg : 'Un error ha ocurrido' });
+        res.status(400).send( {msg: 'Error al crear cancha'});
     }
 
 }
