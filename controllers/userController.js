@@ -71,7 +71,7 @@ exports.updateUser = async (req, res) => {
     const { names, last_names, tel, cuit, email, profile_photo} = req.body;
     const newUser = {};
 
-    if ( names && last_names && tel && cuit && email) {
+    if ( names && tel && email || last_names || cuit ) {
         newUser.names = names;
         newUser.last_names = last_names;
         newUser.tel = tel;
