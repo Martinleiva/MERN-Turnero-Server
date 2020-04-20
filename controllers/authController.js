@@ -25,12 +25,15 @@ exports.authUser = async (req, res) => {
                 id : user.id
             }
         };
-       
+        
+        const type_usr = user.user_type;
+        
+
         jwt.sign(payload, process.env.SECRETA, {
             expiresIn : 3600 
         }, (error, token) => {
             if(error) throw error;                        
-            res.json({token});
+            res.json({ token, type_usr });
         });
         
     } catch (error) {
