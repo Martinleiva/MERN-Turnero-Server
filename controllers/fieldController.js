@@ -60,8 +60,19 @@ exports.getFieldById = async (req, res) => {
 
 //Get all fields by EstblishmenId
 exports.getFieldByEstblishmenId = async (req, res) => {
-    try {                                  
+    try {                                          
         const fields = await Field.find({ 'establishment' : req.params.establishmenId}).populate('sport_type').populate('ground_type');
+        res.json({ fields });
+    } catch (error) {
+        console.log(error);
+        res.status(400).send({ msg : 'Un error ha ocurrido' });
+    }
+}
+
+//Get all fields by sport type
+exports.getFieldBySportTypeId = async (req, res) => {
+    try {              
+        const fields = await Field.find({ 'sport_type' : req.params.sporttypeId}).populate('sport_type').populate('ground_type').populate('establishment');
         res.json({ fields });
     } catch (error) {
         console.log(error);

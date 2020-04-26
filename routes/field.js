@@ -36,6 +36,11 @@ router.get('/establishment/:establishmenId',
     fieldController.getFieldByEstblishmenId
 );
 
+router.get('/sporttype/:sporttypeId',
+    auth,
+    fieldController.getFieldBySportTypeId
+);
+
 router.put('/:id',
     auth,
     fieldController.updateField
