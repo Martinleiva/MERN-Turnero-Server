@@ -1,11 +1,12 @@
 const mongoose = require('mongoose');
 
 const ReservationSchema = mongoose.Schema({
-    reservation_date: { type: Date, require: true, trim: true},
-
-    start_hour: { type: String, require: true, trim: true},
     
-    end_hour: { type: String, require: true, trim: true},
+    title: { type: String, require: true, trim: true},
+
+    start: { type: Date, require: true, trim: true},
+    
+    end: { type: Date, require: true, trim: true},
     
     user_id: { type: mongoose.Schema.Types.ObjectId, ref: 'Users'},
     

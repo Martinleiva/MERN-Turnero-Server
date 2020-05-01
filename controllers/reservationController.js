@@ -1,7 +1,14 @@
 const Reservation = require('../models/Reservation');
+const User = require('../models/User');
+const Field = require('../models/Field');
 const { validationResult } = require('express-validator');
 
-//Ver parte de lsa fechas y comenzar con la parte de canchas CARPETA 24
+//CREAR FUNCION PARA CUANDO RESERVER DEL LADO DEL DUEÑO, VERIFICAR SI
+//LA CANCHA Y ESTABLECIMIENTO DEPENDEN DE ÉL
+
+//VER TEMA DE USER_ID 
+
+//PARA ACTUALIZAR O ELIMINAR DESDE EL DUEÑO VER VIDEOS 5 y 6 CARPETA 24
 
 exports.createReservation = async (req, res) => {
     // Check erros
@@ -10,19 +17,54 @@ exports.createReservation = async (req, res) => {
         return res.status(400).json({ errors: errors.array()});
     }
 
-    try {
-        // Create a new reservation
-        const reservation = new Reservation(req.body);
-        //Save the creator for jwt
-        reservation.user_id = req.user.id;
+    //Extract field and user then check if both exists
+    const { field_id, user_id } = req.body;
 
+    try {
+
+        const field = await Field.findById(field_id);
+        const user = await User.findById(user_id);
+
+        if(!field || !user) {
+            return res.status(404).json({ msg: 'Cancha o Usuario no encontrado' });
+        }
+
+        // // Check the user creator
+        // if(reservation.user_id.toString() !== req.user.id) {
+        //     return res.status(401).json({ msg: 'No Autorizado' });
+        // }
+        
+        const reservation = new Reservation(req.body);
         await reservation.save();
-        res.json(reservation);
+        res.json({ reservation  });
+        
+    } catch (error) {
+        console.log(error);
+        res.status(500).send('Hubo un error');
+    }
+}
+
+//Get reservations by field
+exports.getReservationsByField = async (req, res) => {
+
+    const { field_id } = req.query;
+
+    try {
+        const field = await Field.findById(field_id);
+
+        if(!field) {
+            return res.status(404).json({ msg: 'Cancha no encontrada' });
+        }
+
+        //Get reservations by field
+        const reservations = await Reservation.find({ field_id });
+        res.json({ reservations });
 
     } catch (error) {
         console.log(error);
         res.status(500).send('Hubo un error');
     }
+
 }
 
 // Get all reservations from the user

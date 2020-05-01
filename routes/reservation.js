@@ -10,25 +10,32 @@ const { check } = require('express-validator');
 router.post('/', //Check the params for the field
     auth,
     [
-        check('reservation_date', 'La fecha de la reservación es obligatoria').not().isEmpty(),
-        check('start_hour', 'La hora de inicio de la reservación es obligatoria').not().isEmpty(),
-        check('end_hour', 'La hora de fin de la reservación es obligatoria').not().isEmpty(),
+        check('start', 'La hora de inicio de la reservación es obligatoria').not().isEmpty(),
+        check('end', 'La hora de fin de la reservación es obligatoria').not().isEmpty(),
+        check('field_id', 'La cancha es obligatoria').not().isEmpty(),
+        check('user_id', 'El usuario es obligatorio').not().isEmpty(),
     ],
     reservationController.createReservation
 );
 
-//Get all reservations
-router.get('/', 
+// Get reservations by field
+router.get('/',
     auth,
-    reservationController.getReservations
+    reservationController.getReservationsByField
 );
+
+//Get all reservations
+// router.get('/', 
+//     auth,
+//     reservationController.getReservations
+// );
 
 //Update reservation with id
 router.put('/:id',
     auth,
     [
-        check('reservation_date', 'La fecha de la reservación es obligatoria').not().isEmpty(),
         check('start_hour', 'La hora de inicio de la reservación es obligatoria').not().isEmpty(),
+        check('end_hour', 'La hora de fin de la reservación es obligatoria').not().isEmpty(),
         check('end_hour', 'La hora de fin de la reservación es obligatoria').not().isEmpty(),
     ],
     reservationController.updateReservation
