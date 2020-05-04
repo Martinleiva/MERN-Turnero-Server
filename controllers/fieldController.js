@@ -1,4 +1,5 @@
 const Field = require('../models/Field');
+const Establishment = require('../models/Establishment');
 const { validationResult } = require('express-validator');
 
 exports.createField = async (req, res) => {
@@ -73,6 +74,33 @@ exports.getFieldByEstblishmenId = async (req, res) => {
 exports.getFieldBySportTypeId = async (req, res) => {
     try {              
         const fields = await Field.find({ 'sport_type' : req.params.sporttypeId}).populate('sport_type').populate('ground_type').populate('establishment');
+        res.json({ fields });
+    } catch (error) {
+        console.log(error);
+        res.status(400).send({ msg : 'Un error ha ocurrido' });
+    }
+}
+
+//Get all fields by sport type
+exports.getFieldByFilter = async (req, res) => {
+    console.log('getFieldByFilter');
+    try {              
+        const fields = await Field.find()
+                                  .populate('sport_type')
+                                  .populate('ground_type')  
+                                  .populate('establishment', 
+                                    null, 
+                                    { services: { $all: ['5e8753d17086622ea490f155', '5e8753d67086622ea490f156'] } });
+
+        /*const fields = await Field.aggregate()
+                                    .lookup({ 
+                                         from: Establishment.collection.name, 
+                                         localField: 'establishment', 
+                                         foreignField: '_id', 
+                                         as: 'establishment' }).unwind('services')
+                                         .match({ 'establishment.services' : { $in: ['5e8753d17086622ea490f155', '5e8753d67086622ea490f156'] } })*/
+
+
         res.json({ fields });
     } catch (error) {
         console.log(error);
