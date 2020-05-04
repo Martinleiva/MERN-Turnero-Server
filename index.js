@@ -36,6 +36,7 @@ app.use('/api/sport-type', require('./routes/sport_type'));
 app.use('/api/establishment', require('./routes/establishment'));
 app.use('/api/establishment-by-owner', require('./routes/establishmentByOwner'));
 app.use('/api/field', require('./routes/field'));
+app.use('/api/send-mail', require('./routes/mail'));
 
 app.use('/api/reservation',require('./routes/reservation'));
 
