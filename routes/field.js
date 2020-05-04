@@ -41,7 +41,7 @@ router.get('/sporttype/:sporttypeId',
     fieldController.getFieldBySportTypeId
 );
 
-router.get('/filter/:id',
+router.post('/filter/:id',
     //auth,
     fieldController.getFieldByFilter
 );

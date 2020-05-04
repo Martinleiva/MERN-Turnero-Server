@@ -82,16 +82,31 @@ exports.getFieldBySportTypeId = async (req, res) => {
 }
 
 //Get all fields by sport type
-exports.getFieldByFilter = async (req, res) => {
-    console.log('getFieldByFilter');
-    try {              
-        const fields = await Field.find()
-                                  .populate('sport_type')
-                                  .populate('ground_type')  
-                                  .populate('establishment', 
-                                    null, 
-                                    { services: { $all: ['5e8753d17086622ea490f155', '5e8753d67086622ea490f156'] } });
+exports.getFieldByFilter = async (req, res) => {    
+    try {        
+        const {sport_type, ground_type, services, lighted, roofed} = req.body;
+        
+        let query = {}
 
+        if(lighted) {
+            query.has_lighting = true
+        }
+
+        if(roofed) {
+            query.is_roofed = true
+        }    
+                
+        const fields = await Field.find(query)
+            .populate('sport_type', null, { _id : sport_type } )
+            .populate('ground_type', null, ground_type !== '' ? { _id : ground_type } : {})  
+            .populate('establishment', null, services.length > 0 ? { services: { $all: services } } : {});   
+        
+
+        //We need to clean the above result query. In other words, to remove all fields that have null establisment.
+        const filteredFields = fields.filter(field => (
+            field.establishment !== null && field.sport_type !== null && field.ground_type !== null
+        ))
+                                    
         /*const fields = await Field.aggregate()
                                     .lookup({ 
                                          from: Establishment.collection.name, 
@@ -100,8 +115,7 @@ exports.getFieldByFilter = async (req, res) => {
                                          as: 'establishment' }).unwind('services')
                                          .match({ 'establishment.services' : { $in: ['5e8753d17086622ea490f155', '5e8753d67086622ea490f156'] } })*/
 
-
-        res.json({ fields });
+        res.json({ filteredFields });
     } catch (error) {
         console.log(error);
         res.status(400).send({ msg : 'Un error ha ocurrido' });
