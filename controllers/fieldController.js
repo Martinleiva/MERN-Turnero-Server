@@ -82,9 +82,10 @@ exports.getFieldBySportTypeId = async (req, res) => {
 }
 
 //Get all fields by sport type
-exports.getFieldByFilter = async (req, res) => {    
+exports.getFieldByFilter = async (req, res) => { 
+    console.log('getFieldByFilter:', req.body);   
     try {        
-        const {sport_type, ground_type, services, lighted, roofed} = req.body;
+        const {sport_type, ground_type, roofed, lighted, services} = req.body;
         
         let query = {}
 
@@ -98,7 +99,7 @@ exports.getFieldByFilter = async (req, res) => {
                 
         const fields = await Field.find(query)
             .populate('sport_type', null, { _id : sport_type } )
-            .populate('ground_type', null, ground_type !== '' ? { _id : ground_type } : {})  
+            .populate('ground_type', null, ground_type !== 'all' ? { _id : ground_type } : {})  
             .populate('establishment', null, services.length > 0 ? { services: { $all: services } } : {});   
         
 
