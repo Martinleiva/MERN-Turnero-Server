@@ -1,4 +1,5 @@
 const Field = require('../models/Field');
+const Establishment = require('../models/Establishment');
 const { validationResult } = require('express-validator');
 
 exports.createField = async (req, res) => {
@@ -60,9 +61,62 @@ exports.getFieldById = async (req, res) => {
 
 //Get all fields by EstblishmenId
 exports.getFieldByEstblishmenId = async (req, res) => {
-    try {                                  
+    try {                                          
         const fields = await Field.find({ 'establishment' : req.params.establishmenId}).populate('sport_type').populate('ground_type');
         res.json({ fields });
+    } catch (error) {
+        console.log(error);
+        res.status(400).send({ msg : 'Un error ha ocurrido' });
+    }
+}
+
+//Get all fields by sport type
+exports.getFieldBySportTypeId = async (req, res) => {
+    try {              
+        const fields = await Field.find({ 'sport_type' : req.params.sporttypeId}).populate('sport_type').populate('ground_type').populate('establishment');
+        res.json({ fields });
+    } catch (error) {
+        console.log(error);
+        res.status(400).send({ msg : 'Un error ha ocurrido' });
+    }
+}
+
+//Get all fields by sport type
+exports.getFieldByFilter = async (req, res) => { 
+    console.log('getFieldByFilter:', req.body);   
+    try {        
+        const {sport_type, ground_type, roofed, lighted, services} = req.body;
+        
+        let query = {}
+
+        if(lighted) {
+            query.has_lighting = true
+        }
+
+        if(roofed) {
+            query.is_roofed = true
+        }    
+                
+        const fields = await Field.find(query)
+            .populate('sport_type', null, { _id : sport_type } )
+            .populate('ground_type', null, ground_type !== 'all' ? { _id : ground_type } : {})  
+            .populate('establishment', null, services.length > 0 ? { services: { $all: services } } : {});   
+        
+
+        //We need to clean the above result query. In other words, to remove all fields that have null establisment.
+        const filteredFields = fields.filter(field => (
+            field.establishment !== null && field.sport_type !== null && field.ground_type !== null
+        ))
+                                    
+        /*const fields = await Field.aggregate()
+                                    .lookup({ 
+                                         from: Establishment.collection.name, 
+                                         localField: 'establishment', 
+                                         foreignField: '_id', 
+                                         as: 'establishment' }).unwind('services')
+                                         .match({ 'establishment.services' : { $in: ['5e8753d17086622ea490f155', '5e8753d67086622ea490f156'] } })*/
+
+        res.json({ filteredFields });
     } catch (error) {
         console.log(error);
         res.status(400).send({ msg : 'Un error ha ocurrido' });
