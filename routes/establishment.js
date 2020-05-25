@@ -17,7 +17,7 @@ router.post('/',
 );
 
 router.get('/',
-    auth,
+    //auth,
     establishmentController.getEstablishments
 );
 

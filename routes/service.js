@@ -15,7 +15,7 @@ router.post('/',
 );
 
 router.get('/',
-    auth,
+    //auth,
     serviceController.getServices
 );
 

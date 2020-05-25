@@ -22,27 +22,27 @@ router.post('/',
 );
 
 router.get('/',
-    auth,
+    //auth,
     fieldController.getFields
 );
 
 router.get('/:id',
-    auth,
+    //auth,
     fieldController.getFieldById
 );
 
 router.get('/establishment/:establishmenId',
-    auth,
+    //auth,
     fieldController.getFieldByEstblishmenId
 );
 
 router.get('/sporttype/:sporttypeId',
-    auth,
+    //auth,
     fieldController.getFieldBySportTypeId
 );
 
 router.post('/filter/',
-    auth,
+    //auth,
     fieldController.getFieldByFilter
 );
 
