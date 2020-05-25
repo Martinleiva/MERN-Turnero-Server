@@ -40,7 +40,7 @@ exports.createEstablishment = async (req, res) => {
 //Get all establishments
 exports.getEstablishments = async (req, res) => {
     try {                
-        const establishments = await Establishment.find();
+        const establishments = await Establishment.find().populate('services');
         res.json({ establishments });
     } catch (error) {
         console.log(error);
