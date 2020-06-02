@@ -7,7 +7,13 @@ exports.createEstablishment = async (req, res) => {
     const errors = validationResult(req);
     if(!errors.isEmpty() ) {
         return res.status(400).json({ errors: errors.array()});
-    }    
+    }
+    
+    const existEstablishment = Establishment.find({'name' : req.body.name, 'owner' : req.body.owner });
+
+    if(existEstablishment) {
+        res.status(400).send( {msg: `Ya existe un complejo con el nombre ${req.body.name}`});
+    }
 
     try {
         if(req.body.photo_1){

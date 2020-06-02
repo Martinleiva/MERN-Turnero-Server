@@ -9,7 +9,14 @@ exports.createField = async (req, res) => {
     if(!errors.isEmpty() ) {
         return res.status(400).json({ errors: errors.array()});
     }    
-    try {        
+    try {
+        
+        const existField = Field.find({'name' : req.body.name, 'establishment' : req.body.establishment });
+
+        if(existField) {
+            res.status(400).send( {msg: `Ya existe una cancha con el nombre ${req.body.name}`});
+        }
+
         if(req.body.photo_1){
             /*Here we need to convert the base64 code to a image and 
             save it inside the 'uploaded-files' directory*/        
