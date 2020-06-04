@@ -7,6 +7,7 @@ const jwt = require ('jsonwebtoken');
 exports.sendEmail = async function(req, res){
 
     const { email } = req.body
+    let tokenUser;
 
     try {
 
@@ -23,14 +24,16 @@ exports.sendEmail = async function(req, res){
         };
 
         // Sign the jwt
-        jwt.sign(payload, process.env.SECRETA, {
+        jwt.sign({payload} , process.env.SECRETA, {
             expiresIn: 3600 // 1 hour
         }, (error, token) => {
 
             if(error) throw error;
 
             // Confirmation message
-            res.json({ token });
+            res.json({payload, token});
+            tokenUser = token;
+           
         });
         
         // Definimos el transporter
@@ -42,12 +45,16 @@ exports.sendEmail = async function(req, res){
             }
         });
 
+        console.log(payload.user.id);
+        const iduser = payload.user.id;
+        console.log('tokenuser => ',tokenUser);
+
         // Definimos el email
         const mailOptions = {
             from: 'tucanchaya0@gmail.com',
             to: `${email}`,
             subject: 'Nueva contraseña para TuCanchaYa.com',
-            text: `Hola ${user.names}, recientemente solicitaste el cambio de tu contraseña. Si esto no es así, te pedimos que ignores este mensaje. De lo contrario, si deseas modificar tu contraseña, por favor ingresa al siguiente link http://localhost:3000/reset-pass/${token} en donde tendras un tiempo de 1 hs (una hora) para hacer el cambio, de no ser así, deberas repetir el proceso solicitando un cambio de contraseña nuevamente. Muchas gracias TuCanchaYa.com`
+            text: `Hola ${user.names}, recientemente solicitaste el cambio de tu contraseña. Si esto no es así, te pedimos que ignores este mensaje. De lo contrario, si deseas modificar tu contraseña, por favor ingresa al siguiente link http://localhost:3000/reset-pass/${iduser} en donde tendras un tiempo de 1 hs (una hora) para hacer el cambio, de no ser así, deberas repetir el proceso solicitando un cambio de contraseña nuevamente. Muchas gracias el equipo de TuCanchaYa.com`
         };
 
         // Enviamos el email
@@ -57,10 +64,9 @@ exports.sendEmail = async function(req, res){
                 res.send(500, err.message);
             } else {
                 console.log("Email enviado");
-                res.status(200).jsonp(req.body);
+                res.status(200).json(req.body);
             }
         });
-
 
     } catch (error) {
         console.log(error);

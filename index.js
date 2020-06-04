@@ -21,7 +21,7 @@ app.use(cors());
 app.use(express.json({ extended: true }));
 
 // App's port 
-const PORT = process.env.PORT  || 4000;
+const PORT = process.env.PORT || 4000;
 
 app.use('/images', express.static('./uploaded-files'));
 
@@ -37,6 +37,7 @@ app.use('/api/establishment', require('./routes/establishment'));
 app.use('/api/establishment-by-owner', require('./routes/establishmentByOwner'));
 app.use('/api/field', require('./routes/field'));
 app.use('/api/send-mail', require('./routes/mail'));
+app.use('/api/reset-pass', require('./routes/reset_password'));
 
 app.use('/api/reservation',require('./routes/reservation'));
 
