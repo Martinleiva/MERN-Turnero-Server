@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 
 const ReservationSchema = mongoose.Schema({
     
-    title: { type: String, require: true, trim: true},
+    name: { type: String, require: true, trim: true},
 
     start: { type: Date, require: true, trim: true},
     
@@ -11,6 +11,10 @@ const ReservationSchema = mongoose.Schema({
     user_id: { type: mongoose.Schema.Types.ObjectId, ref: 'Users'},
     
     field_id: { type: mongoose.Schema.Types.ObjectId, ref: 'Fields' },
+
+    fieldName: { type: String, require: true, trim: true},
+
+    establishment: { type: String, require: true, trim: true},
     
     created_date: { type: Date, default: Date.now() }
 });
