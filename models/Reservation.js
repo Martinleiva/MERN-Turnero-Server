@@ -15,6 +15,8 @@ const ReservationSchema = mongoose.Schema({
     fieldName: { type: String, require: true, trim: true},
 
     establishment: { type: String, require: true, trim: true},
+
+    state: { type: String, require: true, trim: true},
     
     created_date: { type: Date, default: Date.now() }
 });
